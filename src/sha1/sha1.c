@@ -31,7 +31,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#ifndef ESP32
 #include <c_types.h>
+#endif
 
 #include "sha1.h"
 
@@ -61,7 +63,7 @@
 
 
 /* Hash a single 512-bit block. This is the core of the algorithm. */
-void ICACHE_FLASH_ATTR SHA1Transform(uint32_t state[5], uint8_t buffer[64])
+STATIC void ICACHE_FLASH_ATTR SHA1Transform(uint32_t state[5], uint8_t buffer[64])
 {
 uint32_t a, b, c, d, e;
 typedef union {
@@ -122,7 +124,7 @@ CHAR64LONG16* block = (const CHAR64LONG16*)buffer;
 
 /* SHA1Init - Initialize new context */
 
-void ICACHE_FLASH_ATTR SHA1Init(SHA1_CTX* context)
+STATIC void ICACHE_FLASH_ATTR SHA1Init(SHA1_CTX* context)
 {
     /* SHA1 initialization constants */
     context->state[0] = 0x67452301;
@@ -136,7 +138,7 @@ void ICACHE_FLASH_ATTR SHA1Init(SHA1_CTX* context)
 
 /* Run your data through this. */
 
-void ICACHE_FLASH_ATTR SHA1Update(SHA1_CTX* context, uint8_t* data, uint32_t len)
+STATIC void ICACHE_FLASH_ATTR SHA1Update(SHA1_CTX* context, uint8_t* data, uint32_t len)
 {
     uint32_t i;
     uint32_t j;
@@ -161,7 +163,7 @@ void ICACHE_FLASH_ATTR SHA1Update(SHA1_CTX* context, uint8_t* data, uint32_t len
 
 /* Add padding and return the message digest. */
 
-void ICACHE_FLASH_ATTR SHA1Final(unsigned char digest[20], SHA1_CTX* context)
+STATIC void ICACHE_FLASH_ATTR SHA1Final(unsigned char digest[20], SHA1_CTX* context)
 {
 unsigned i;
 unsigned char finalcount[8];
